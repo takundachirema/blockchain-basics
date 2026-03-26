@@ -19,7 +19,7 @@ app.use("/api", createXrplRouter());
 app.use("/api", createEthereumRouter());
 
 app.get("/", (req, res) => {
-  res.redirect("/public-key-cryptography/intro.html");
+  res.redirect("/index.html");
 });
 
 app.listen(PORT, () => {
