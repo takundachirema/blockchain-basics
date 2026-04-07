@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proof of Stake (PoS) - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="drawer" id="drawer">
+        <!-- Navigation will be rendered here by navigation.js -->
+      </aside>
+
+      <main class="main-content">
+        <div class="content-header">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1>Proof of Stake (PoS)</h1>
+        </div>
+
+        <div class="content-body">
+          <div class="page-content">
+            <h2>How PoS Works</h2>
+            <p>
+              In <strong>Proof of Stake</strong>, validators lock funds as
+              <strong>stake</strong>. The protocol selects validators to propose
+              and attest to blocks, often using stake-weighted selection plus
+              randomness.
+            </p>
+            <ul>
+              <li>Validators must keep stake locked as collateral.</li>
+              <li>Blocks are finalized through validator voting/attestations.</li>
+              <li>Energy use is far lower than PoW mining.</li>
+            </ul>
+
+            <h3>Block Rewards in PoS</h3>
+            <p>
+              Honest validators typically earn:
+            </p>
+            <ul>
+              <li>
+                <strong>Protocol rewards:</strong> Issuance for proposing and
+                attesting correctly.
+              </li>
+              <li>
+                <strong>Transaction fees/tips:</strong> Depending on protocol
+                design.
+              </li>
+            </ul>
+            <p>
+              The system is designed so consistent uptime and honest votes produce
+              steady returns.
+            </p>
+
+            <h3>Cost of Being Dishonest in PoS</h3>
+            <ul>
+              <li>
+                <strong>Slashing risk:</strong> Malicious or conflicting behavior
+                can burn a portion of the validator’s stake.
+              </li>
+              <li>
+                <strong>Penalty risk:</strong> Offline or poor behavior can reduce
+                rewards.
+              </li>
+              <li>
+                <strong>Large capital at risk:</strong> Coordinated attacks need
+                large stake exposure that can be penalized.
+              </li>
+              <li>
+                <strong>Economic self-harm:</strong> Attacks can reduce trust and
+                token value, hurting the attacker’s own staked position.
+              </li>
+            </ul>
+
+            <div class="info-box">
+              <strong>Security intuition:</strong> PoS secures the chain by
+              requiring attackers to place valuable collateral at risk and by
+              directly punishing dishonest behavior.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+  </body>
+</html>

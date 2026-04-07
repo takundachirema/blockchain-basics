@@ -37,7 +37,7 @@ const navigationData = {
             icon: '🤝',
             expanded: false,
             pages: [
-                { id: 'intro', name: 'Nodes in the Ecosystem', path: '/ethereum/consensus-mechanisms/intro.html' },
+                { id: 'intro', name: 'Introduction', path: '/ethereum/consensus-mechanisms/intro.html' },
                 { id: 'submit-transaction', name: 'Submit Transaction to Sepolia', path: '/ethereum/consensus-mechanisms/submit-transaction.html' }
             ]
         },

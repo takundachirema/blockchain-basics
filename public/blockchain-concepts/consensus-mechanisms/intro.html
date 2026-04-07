@@ -66,39 +66,18 @@
                     </ul>
 
                     <h3>Main Consensus Mechanisms</h3>
-
-                    <h4>1. Proof of Work (PoW)</h4>
                     <p>
-                        <strong>How it works:</strong> Miners compete to solve a computationally difficult puzzle. The 
-                        first miner to solve it gets to create the next block and receives a reward.
+                        Consensus families have different trade-offs in security, energy use, and economics. For focused
+                        explanations, see:
                     </p>
                     <ul>
-                        <li>Miners use computational power (hashing) to find a solution</li>
-                        <li>The difficulty adjusts to maintain consistent block times</li>
-                        <li>Requires significant energy consumption</li>
-                        <li>Used by Bitcoin and Ethereum (before The Merge)</li>
+                        <li>
+                            <a href="/blockchain-concepts/consensus-mechanisms/proof-of-work.html">Proof of Work (PoW)</a>
+                        </li>
+                        <li>
+                            <a href="/blockchain-concepts/consensus-mechanisms/proof-of-stake.html">Proof of Stake (PoS)</a>
+                        </li>
                     </ul>
-                    <p>
-                        <strong>Security:</strong> An attacker would need to control more than 50% of the network's 
-                        computational power to successfully attack the network (51% attack).
-                    </p>
-
-                    <h4>2. Proof of Stake (PoS)</h4>
-                    <p>
-                        <strong>How it works:</strong> Validators are chosen to create blocks based on the amount of 
-                        cryptocurrency they "stake" (lock up) and other factors. Validators are rewarded for honest 
-                        behavior and penalized for malicious actions.
-                    </p>
-                    <ul>
-                        <li>Validators must lock up (stake) cryptocurrency as collateral</li>
-                        <li>Selection is often based on stake amount and randomization</li>
-                        <li>Much more energy-efficient than Proof of Work</li>
-                        <li>Used by Ethereum (after The Merge), Cardano, and others</li>
-                    </ul>
-                    <p>
-                        <strong>Security:</strong> Validators risk losing their staked funds if they act maliciously, 
-                        making attacks economically unfeasible.
-                    </p>
 
                     <h4>3. Delegated Proof of Stake (DPoS)</h4>
                     <p>
@@ -112,181 +91,36 @@
                         Requires a known set of validators and is faster but less decentralized.
                     </p>
 
-                    <h3>Transaction Blocks</h3>
+                    <h3>Why Validators Are Incentivized to Be Honest</h3>
                     <p>
-                        Transactions in a blockchain are grouped together into <strong>blocks</strong>. Each block contains:
+                        Consensus works not only because of cryptography, but also because of economics. The protocol aligns
+                        incentives so that honest behavior is usually the most profitable long-term strategy.
                     </p>
                     <ul>
-                        <li>A set of transactions</li>
-                        <li>A reference to the previous block (creating a chain)</li>
-                        <li>Proof of the consensus mechanism (e.g., proof of work solution)</li>
-                        <li>Metadata about the block</li>
+                        <li>
+                            <strong>Block rewards:</strong> The block producer receives protocol rewards (newly issued coins/tokens)
+                            and usually transaction fees for proposing valid blocks.
+                        </li>
+                        <li>
+                            <strong>Predictable revenue for honest participation:</strong> Miners/validators that follow rules can
+                            keep earning over many blocks and epochs.
+                        </li>
+                        <li>
+                            <strong>Cost of dishonest behavior:</strong> Attempting double-spends, censorship, or invalid blocks
+                            risks losing expected rewards, wasted resources, or direct penalties.
+                        </li>
                     </ul>
-
-                    <h3>Validating Transactions</h3>
                     <p>
-                        Before a transaction is included in a block, it must be validated. Validators check:
+                        In <strong>PoW</strong>, dishonesty is expensive because attackers must spend real-world energy and hardware
+                        costs, and they can still lose if the attack fails or the chain rejects their blocks. In
+                        <strong>PoS</strong>, dishonesty can trigger <strong>slashing</strong> (loss of staked funds), so attackers
+                        put large collateral at risk. In both models, the attacker must spend or risk significant value up front.
                     </p>
-                    <ul>
-                        <li><strong>Signature:</strong> The transaction is properly signed with the sender's private key</li>
-                        <li><strong>Balance:</strong> The sender has sufficient funds</li>
-                        <li><strong>Nonce:</strong> The transaction nonce is correct (prevents replay attacks)</li>
-                        <li><strong>Format:</strong> The transaction follows the correct format</li>
-                        <li><strong>Gas:</strong> Sufficient gas is provided for execution</li>
-                    </ul>
-
                     <div class="info-box">
-                        <strong>Block Validation:</strong> Once a block is proposed, other nodes validate:
-                        <ul style="margin-top: 10px;">
-                            <li>All transactions in the block are valid</li>
-                            <li>The block follows consensus rules</li>
-                            <li>The proof (PoW solution or PoS signature) is valid</li>
-                            <li>The block links correctly to the previous block</li>
-                        </ul>
+                        <strong>Incentive principle:</strong> If honest participation yields steady rewards while attacks are
+                        costly and uncertain, rational participants are pushed toward honest behavior.
                     </div>
 
-                    <h3>Transaction Finality and the Longest Chain Rule</h3>
-                    <p>
-                        <strong>Transaction finality</strong> refers to the point at which a
-                        transaction is considered irreversible and permanently part of the
-                        ledger. In a distributed network, different nodes may sometimes
-                        produce valid blocks at nearly the same time, creating a temporary
-                        <strong>fork</strong>: two competing branches of the chain. The
-                        network must agree on which branch is the canonical one. This is
-                        where the <strong>longest chain rule</strong> applies.
-                    </p>
-                    <p>
-                        Under the longest chain rule, when two valid blocks are found and
-                        broadcast at the same time, the tie is broken when the
-                        <strong>next</strong> block is found. That next block is built on
-                        top of one of the two competing blocks. The branch that gets
-                        extended becomes the accepted chain; the other branch's tip is
-                        treated as an <strong>orphan block</strong> and is no longer part
-                        of the canonical chain. Nodes therefore consider the longest
-                        (most cumulative proof-of-work or, in Proof of Stake, the chain
-                        with the most attestations) as the true history.
-                    </p>
-                    <p>
-                        The deeper a transaction is buried under subsequent blocks, the
-                        more confident we can be that it has achieved finality, because
-                        reverting it would require replacing a longer chain. In practice,
-                        services often wait for a certain number of
-                        <strong>confirmations</strong> (blocks built on top of the block
-                        containing the transaction) before treating a transfer as final.
-                    </p>
-                    <p>
-                        How finality is achieved depends on the consensus mechanism:
-                    </p>
-                    <ul>
-                        <li><strong>Probabilistic Finality (PoW):</strong> Blocks become more final as more blocks are
-                        added on top. Generally, 6+ confirmations provide strong confidence.</li>
-                        <li><strong>Deterministic Finality (PoS):</strong> Blocks are finalized after a certain number
-                        of epochs through a voting process. Once finalized, they cannot be reversed except through
-                        extreme circumstances.</li>
-                    </ul>
-
-                    <div style="margin: 20px 0; text-align: center">
-                        <img
-                            src="/assets/longest_chain_rule.png"
-                            alt="Longest chain rule: two valid blocks create a tie; the next block extends one branch and breaks the tie, making the other an orphan block"
-                            style="
-                                max-width: 100%;
-                                height: auto;
-                                border-radius: 5px;
-                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                            "
-                        />
-                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
-                            <strong>Longest chain rule:</strong> When two valid blocks are
-                            broadcast at the same time (TIE), the next block that is found
-                            is built on one branch. That branch becomes the canonical
-                            chain; the other branch's tip is the orphan block (TIE IS
-                            BROKEN).
-                        </p>
-                    </div>
-
-                    <h3>Block Structure</h3>
-                    <p>
-                        Based on Ethereum's block structure (as shown on Etherscan), a block contains the following components:
-                    </p>
-
-                    <div style="margin: 20px 0; text-align: center">
-                        <img
-                            src="/assets/block_details.png"
-                            alt="Ethereum block explorer view showing block overview: height, status, timestamp, transactions, gas, fees, hashes and roots"
-                            style="
-                                max-width: 100%;
-                                height: auto;
-                                border-radius: 5px;
-                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-                            "
-                        />
-                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
-                            <strong>Block details (block explorer):</strong> Overview of an Ethereum block showing header fields, gas and fees, and cryptographic hashes (hash, parent hash, state root, withdrawals root, nonce).
-                        </p>
-                    </div>
-
-                    <h4>Block Header</h4>
-                    <ul>
-                        <li><strong>Block Height/Number:</strong> The position of the block in the blockchain</li>
-                        <li><strong>Timestamp:</strong> When the block was created</li>
-                        <li><strong>Hash:</strong> Cryptographic hash of the block header</li>
-                        <li><strong>Parent Hash:</strong> Hash of the previous block (creates the chain)</li>
-                        <li><strong>State Root:</strong> Root hash of the state trie (all account balances and data)</li>
-                        <li><strong>Transactions Root:</strong> Root hash of the Merkle tree of all transactions</li>
-                        <li><strong>Receipts Root:</strong> Root hash of transaction receipts</li>
-                        <li><strong>Gas Limit:</strong> Maximum gas allowed in the block</li>
-                        <li><strong>Gas Used:</strong> Total gas consumed by transactions in the block</li>
-                        <li><strong>Base Fee Per Gas:</strong> Minimum gas price required (post-London upgrade)</li>
-                        <li><strong>Extra Data:</strong> Optional data that can be included by the block proposer</li>
-                        <li><strong>Nonce:</strong> Value used in proof of work (pre-Merge) or other consensus data</li>
-                    </ul>
-
-                    <h4>Block Body</h4>
-                    <ul>
-                        <li><strong>Transactions:</strong> List of all transactions included in the block</li>
-                        <li><strong>Transaction Count:</strong> Number of transactions in the block</li>
-                        <li><strong>Withdrawals:</strong> Validator withdrawal requests (post-Shanghai upgrade)</li>
-                    </ul>
-
-                    <h4>Consensus Information (Post-Merge Ethereum)</h4>
-                    <ul>
-                        <li><strong>Slot:</strong> The slot number in the beacon chain</li>
-                        <li><strong>Epoch:</strong> The epoch number (32 slots = 1 epoch)</li>
-                        <li><strong>Proposer Index:</strong> Identifier of the validator who proposed the block</li>
-                        <li><strong>Block Reward:</strong> Total reward received by the block proposer</li>
-                        <li><strong>Fee Recipient:</strong> Address that receives transaction fees</li>
-                    </ul>
-
-                    <h4>Additional Block Information</h4>
-                    <ul>
-                        <li><strong>Status:</strong> Whether the block is finalized or pending</li>
-                        <li><strong>Size:</strong> Size of the block in bytes</li>
-                        <li><strong>Burnt Fees:</strong> Amount of ETH burned (post-London upgrade)</li>
-                        <li><strong>Total Difficulty:</strong> Cumulative difficulty (pre-Merge)</li>
-                    </ul>
-
-                    <div class="warning-box">
-                        <strong>Note:</strong> The block structure has evolved over time. Ethereum's transition from Proof 
-                        of Work to Proof of Stake (The Merge) changed some block fields. Always refer to the current 
-                        network's specifications when working with blocks.
-                    </div>
-
-                    <h3>How Blocks Create the Chain</h3>
-                    <p>
-                        Each block contains a reference to its parent block through the "Parent Hash" field. This creates 
-                        an immutable chain:
-                    </p>
-                    <ol>
-                        <li>Block 1 contains transactions and references "genesis" (no parent)</li>
-                        <li>Block 2 contains transactions and references Block 1's hash</li>
-                        <li>Block 3 contains transactions and references Block 2's hash</li>
-                        <li>And so on...</li>
-                    </ol>
-                    <p>
-                        This chaining makes it extremely difficult to alter past blocks. Changing any block would require 
-                        recalculating all subsequent blocks, which becomes computationally infeasible as the chain grows.
-                    </p>
                 </div>
             </div>
         </main>

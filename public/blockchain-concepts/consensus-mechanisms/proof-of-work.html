@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proof of Work (PoW) - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="drawer" id="drawer">
+        <!-- Navigation will be rendered here by navigation.js -->
+      </aside>
+
+      <main class="main-content">
+        <div class="content-header">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1>Proof of Work (PoW)</h1>
+        </div>
+
+        <div class="content-body">
+          <div class="page-content">
+            <h2>How PoW Works</h2>
+            <p>
+              In <strong>Proof of Work</strong>, miners compete to solve a
+              computational puzzle by repeatedly hashing block data with different
+              nonce values. The first miner who finds a valid hash below the
+              target broadcasts the new block.
+            </p>
+            <ul>
+              <li>Mining power is measured by hash rate.</li>
+              <li>Difficulty adjusts so block production stays near a target rate.</li>
+              <li>Other nodes verify the block quickly.</li>
+            </ul>
+
+            <h3>Simple PoW Challenge Illustration</h3>
+            <p>
+              In this simplified demo, we hash Bitcoin-like block data plus a
+              changing nonce. The goal is to find a hash that starts with a
+              required number of leading zeros.
+            </p>
+
+            <div class="card">
+              <div class="input-group">
+                <label for="powBlockData">Sample block data</label>
+                <textarea id="powBlockData" rows="5">
+version: 0x20000000
+previous_block_hash: 0000000000000000000aa19f5f6f3d497d8e1f09c8ef63f63a749e4a08efab12
+merkle_root: 4f3c2fdd6f8f5c67a7cc7f6015b88f4c9af6a31a5f28f3d4a1d76ea0ff9ac3b2
+timestamp: 1712600000
+bits: 0x170e58b2</textarea
+                >
+              </div>
+
+              <div class="input-group">
+                <label for="powZeroTarget">Leading zero target</label>
+                <input
+                  id="powZeroTarget"
+                  type="number"
+                  min="1"
+                  max="6"
+                  value="4"
+                />
+                <small style="color: #666; margin-top: 5px; display: block">
+                  Higher target = harder puzzle. (This is a toy model, not real
+                  network difficulty encoding.)
+                </small>
+              </div>
+
+              <button class="button" id="powCalculateBtn">Calculate</button>
+
+              <div id="powOutput" style="display: none; margin-top: 15px">
+                <span class="output-label">Nonce found:</span>
+                <div class="output-box" id="powNonce"></div>
+
+                <span class="output-label">Attempts:</span>
+                <div class="output-box" id="powAttempts"></div>
+
+                <span class="output-label">Hash result (SHA-256):</span>
+                <div class="output-box" id="powHash"></div>
+
+                <span class="output-label">Rule check:</span>
+                <div class="output-box" id="powRuleCheck"></div>
+              </div>
+            </div>
+
+            <h3>How the Zero Target Adjusts with Mining Power</h3>
+            <p>
+              The network aims for a stable average block time. If total mining
+              power rises, blocks would be found too quickly, so the protocol
+              increases difficulty (effectively requiring a rarer hash pattern).
+              If mining power drops, difficulty is reduced so blocks do not slow
+              down too much.
+            </p>
+            <p>
+              In Bitcoin, this retargeting happens periodically (about every 2016
+              blocks, roughly two weeks) based on how fast the previous period was
+              mined.
+            </p>
+
+            <h3>Block Rewards in PoW</h3>
+            <p>
+              Honest miners are paid through:
+            </p>
+            <ul>
+              <li>
+                <strong>Block subsidy:</strong> Newly minted coins.
+              </li>
+              <li>
+                <strong>Transaction fees:</strong> Fees from included
+                transactions.
+              </li>
+            </ul>
+            <p>
+              These rewards create direct incentives to follow consensus rules and
+              publish valid blocks accepted by the network.
+            </p>
+
+            <h3>Cost of Being Dishonest in PoW</h3>
+            <ul>
+              <li>
+                <strong>High upfront cost:</strong> Attackers need massive hash
+                power (hardware + electricity).
+              </li>
+              <li>
+                <strong>Opportunity cost:</strong> While attacking, miners may
+                lose normal block reward revenue.
+              </li>
+              <li>
+                <strong>Attack uncertainty:</strong> If the network rejects the
+                attack chain, the attacker pays real costs with little or no
+                return.
+              </li>
+              <li>
+                <strong>Asset impact:</strong> Successful attacks can damage
+                market trust and lower the value of the attacker’s own holdings.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <strong>Security intuition:</strong> PoW protects the chain by
+              making attacks economically and physically expensive.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script>
+      async function sha256Hex(input) {
+        const bytes = new TextEncoder().encode(input);
+        const digest = await crypto.subtle.digest("SHA-256", bytes);
+        return Array.from(new Uint8Array(digest))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      function randomNonce() {
+        return Math.floor(Math.random() * 0xffffffff);
+      }
+
+      async function runPowDemo() {
+        const blockData = document.getElementById("powBlockData").value.trim();
+        const zeroTarget = Math.max(
+          1,
+          Math.min(6, parseInt(document.getElementById("powZeroTarget").value, 10) || 4)
+        );
+
+        const maxAttempts = 50000;
+        const prefix = "0".repeat(zeroTarget);
+        let attempts = 0;
+        let foundNonce = null;
+        let foundHash = "";
+
+        while (attempts < maxAttempts) {
+          const nonce = randomNonce();
+          const candidate = `${blockData}\nnonce: ${nonce}`;
+          const hash = await sha256Hex(candidate);
+          attempts += 1;
+          if (hash.startsWith(prefix)) {
+            foundNonce = nonce;
+            foundHash = hash;
+            break;
+          }
+        }
+
+        const nonceEl = document.getElementById("powNonce");
+        const attemptsEl = document.getElementById("powAttempts");
+        const hashEl = document.getElementById("powHash");
+        const ruleEl = document.getElementById("powRuleCheck");
+        const outputEl = document.getElementById("powOutput");
+
+        if (foundNonce !== null) {
+          nonceEl.textContent = String(foundNonce);
+          attemptsEl.textContent = String(attempts);
+          hashEl.textContent = foundHash;
+          ruleEl.textContent = `Valid: hash starts with ${zeroTarget} leading zero(s).`;
+          ruleEl.style.backgroundColor = "#e8f5e9";
+        } else {
+          nonceEl.textContent = "No nonce found in this run";
+          attemptsEl.textContent = String(attempts);
+          hashEl.textContent = "Try clicking Calculate again";
+          ruleEl.textContent = `Not found within ${maxAttempts} attempts at target ${zeroTarget}.`;
+          ruleEl.style.backgroundColor = "#fff3cd";
+        }
+
+        outputEl.style.display = "block";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("powCalculateBtn");
+        if (btn) btn.addEventListener("click", runPowDemo);
+      });
+    </script>
+  </body>
+</html>

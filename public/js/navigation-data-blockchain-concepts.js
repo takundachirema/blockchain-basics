@@ -30,7 +30,10 @@ const navigationData = {
             icon: '🤝',
             expanded: false,
             pages: [
-                { id: 'intro', name: 'Introduction', path: '/blockchain-concepts/consensus-mechanisms/intro.html' }
+                { id: 'intro', name: 'Introduction', path: '/blockchain-concepts/consensus-mechanisms/intro.html' },
+                { id: 'transaction-flow', name: 'Transaction Flow', path: '/blockchain-concepts/consensus-mechanisms/transaction-flow.html' },
+                { id: 'proof-of-work', name: 'Proof of Work', path: '/blockchain-concepts/consensus-mechanisms/proof-of-work.html' },
+                { id: 'proof-of-stake', name: 'Proof of Stake', path: '/blockchain-concepts/consensus-mechanisms/proof-of-stake.html' }
             ]
         }
     ]

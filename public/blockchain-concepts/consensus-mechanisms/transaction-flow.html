@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Flow - Consensus Mechanisms - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="drawer" id="drawer">
+            <!-- Navigation will be rendered here by navigation.js -->
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <h1>Transaction Flow</h1>
+            </div>
+
+            <div class="content-body">
+                <div class="page-content">
+                    <h2>Transaction Validation Flow</h2>
+                    <p>
+                        The diagram below shows the end-to-end flow of how transactions move from users to finalized ledger updates.
+                    </p>
+
+                    <div style="margin: 20px 0; text-align: center">
+                        <img
+                            src="/assets/transaction_flow.png"
+                            alt="Transaction validation flow from signed transactions, to block proposal, network verification, blockchain update, and beneficiary notification"
+                            style="
+                                max-width: 100%;
+                                height: auto;
+                                border-radius: 5px;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                            "
+                        />
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                            <strong>Transaction validation flow:</strong> From signed transactions to verified blocks and updated ledger state.
+                        </p>
+                    </div>
+
+                    <ol>
+                        <li>
+                            <strong>Senders create and sign transactions:</strong> Users form transactions and sign them with their private keys. These signed payloads are broadcast as <strong>proposed transactions</strong> and enter the network transaction pool.
+                        </li>
+                        <li>
+                            <strong>Miners/validators select transactions for a block:</strong> A block producer selects transactions from the pool and builds a candidate block. Block capacity limits throughput (TPS). For example, Bitcoin blocks have historically been constrained around ~1 MB, which contributes to low base-layer TPS and longer confirmation latency. Larger blocks can include more transactions, but they also increase propagation demands and can raise fork/orphan risk if peers cannot relay blocks quickly enough.
+                        </li>
+                        <li>
+                            <strong>Block broadcast and network verification:</strong> The candidate block is broadcast to peers, and nodes independently verify signatures, balances/UTXOs, nonces/order rules, and consensus requirements. Decentralization matters because concentrated control can enable censorship or majority attacks. In PoW contexts, if one coordinated entity controls a majority of effective hashing power (commonly discussed as 51%+), they can more easily reorganize recent history.
+                            <br /><br />
+                            In PoW mining, miners vary the <strong>nonce</strong> (and sometimes extra block fields) to search for a valid block hash that satisfies the difficulty target (conceptually, a hash below a threshold, often simplified as "starting with enough zeros"). On Bitcoin, mining difficulty is retargeted roughly every 2016 blocks (about two weeks) to keep average block intervals near 10 minutes.
+                        </li>
+                        <li>
+                            <strong>Valid blocks are accepted and appended:</strong> If the proposed block passes validation, nodes add it to their local ledger copy and continue building on it.
+                        </li>
+                        <li>
+                            <strong>Transactions approach finality:</strong> In PoW, finality is probabilistic and strengthens with confirmations under the longest-chain rule (e.g., Bitcoin often uses ~6 confirmations as a common safety threshold). In PoS systems, finality is reached through validator voting/attestation rules; in Ethereum PoS, committees are assigned with proposers and attesters, and finalized checkpoints provide stronger settlement guarantees.
+                        </li>
+                    </ol>
+
+                    <h3>Transaction Blocks</h3>
+                    <p>
+                        Transactions in a blockchain are grouped together into <strong>blocks</strong>. Each block contains:
+                    </p>
+                    <ul>
+                        <li>A set of transactions</li>
+                        <li>A reference to the previous block (creating a chain)</li>
+                        <li>Proof of the consensus mechanism (e.g., proof of work solution)</li>
+                        <li>Metadata about the block</li>
+                    </ul>
+
+                    <h3>Validating Transactions</h3>
+                    <p>
+                        Before a transaction is included in a block, it must be validated. Validators check:
+                    </p>
+                    <div class="info-box">
+                        <strong>Two checks happen:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li><strong>Check 1: Transaction inclusion in a block</strong> (membership proof)</li>
+                            <li><strong>Check 2: Transaction validity</strong> (rules and signatures)</li>
+                        </ul>
+                    </div>
+
+                    <h4>Check 1: Inclusion via Merkle Tree and Merkle Root</h4>
+                    <p>
+                        Inclusion asks: <em>Is this transaction actually part of this block?</em> Nodes and light clients can
+                        verify this using a Merkle proof. The transaction hash is combined with sibling hashes up the tree
+                        until it reconstructs the block’s Merkle root. If the reconstructed root matches the root stored in
+                        the block header, inclusion is proven.
+                    </p>
+                    <div style="margin: 20px 0; text-align: center">
+                        <img
+                            src="/assets/block_merkle.png"
+                            alt="Merkle tree showing leaf transaction hashes combined up to a Merkle root"
+                            style="
+                                max-width: 100%;
+                                height: auto;
+                                border-radius: 5px;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                            "
+                        />
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                            <strong>Merkle proof idea:</strong> A transaction is included if its hash path recomputes the
+                            Merkle root in the block header.
+                        </p>
+                    </div>
+
+                    <h4>Check 2: Transaction Validity</h4>
+                    <p>
+                        Validity asks: <em>Even if included, is the transaction allowed by protocol rules?</em> This includes
+                        signature correctness, sufficient balance/UTXO availability, nonce/order correctness, and proper
+                        transaction format.
+                    </p>
+                    <ul>
+                        <li><strong>Signature:</strong> The transaction is properly signed with the sender's private key</li>
+                        <li><strong>Balance:</strong> The sender has sufficient funds</li>
+                        <li><strong>Nonce:</strong> The transaction nonce is correct (prevents replay attacks)</li>
+                        <li><strong>Format:</strong> The transaction follows the correct format</li>
+                        <li><strong>Gas:</strong> Sufficient gas is provided for execution</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <strong>Block Validation:</strong> Once a block is proposed, other nodes validate:
+                        <ul style="margin-top: 10px;">
+                            <li>All transactions in the block are valid</li>
+                            <li>The block follows consensus rules</li>
+                            <li>The proof (PoW solution or PoS signature) is valid</li>
+                            <li>The block links correctly to the previous block</li>
+                        </ul>
+                    </div>
+
+                    <h3>Transaction Finality and the Longest Chain Rule</h3>
+                    <p>
+                        <strong>Transaction finality</strong> refers to the point at which a
+                        transaction is considered irreversible and permanently part of the
+                        ledger. In a distributed network, different nodes may sometimes
+                        produce valid blocks at nearly the same time, creating a temporary
+                        <strong>fork</strong>: two competing branches of the chain. The
+                        network must agree on which branch is the canonical one. This is
+                        where the <strong>longest chain rule</strong> applies.
+                    </p>
+                    <p>
+                        Under the longest chain rule, when two valid blocks are found and
+                        broadcast at the same time, the tie is broken when the
+                        <strong>next</strong> block is found. That next block is built on
+                        top of one of the two competing blocks. The branch that gets
+                        extended becomes the accepted chain; the other branch's tip is
+                        treated as an <strong>orphan block</strong> and is no longer part
+                        of the canonical chain. Nodes therefore consider the longest
+                        (most cumulative proof-of-work or, in Proof of Stake, the chain
+                        with the most attestations) as the true history.
+                    </p>
+                    <p>
+                        The deeper a transaction is buried under subsequent blocks, the
+                        more confident we can be that it has achieved finality, because
+                        reverting it would require replacing a longer chain. In practice,
+                        services often wait for a certain number of
+                        <strong>confirmations</strong> (blocks built on top of the block
+                        containing the transaction) before treating a transfer as final.
+                    </p>
+                    <p>
+                        How finality is achieved depends on the consensus mechanism:
+                    </p>
+                    <ul>
+                        <li><strong>Probabilistic Finality (PoW):</strong> Blocks become more final as more blocks are
+                        added on top. Generally, 6+ confirmations provide strong confidence.</li>
+                        <li><strong>Deterministic Finality (PoS):</strong> Blocks are finalized after a certain number
+                        of epochs through a voting process. Once finalized, they cannot be reversed except through
+                        extreme circumstances.</li>
+                    </ul>
+
+                    <div style="margin: 20px 0; text-align: center">
+                        <img
+                            src="/assets/longest_chain_rule.png"
+                            alt="Longest chain rule: two valid blocks create a tie; the next block extends one branch and breaks the tie, making the other an orphan block"
+                            style="
+                                max-width: 100%;
+                                height: auto;
+                                border-radius: 5px;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                            "
+                        />
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                            <strong>Longest chain rule:</strong> When two valid blocks are
+                            broadcast at the same time (TIE), the next block that is found
+                            is built on one branch. That branch becomes the canonical
+                            chain; the other branch's tip is the orphan block (TIE IS
+                            BROKEN).
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+</body>
+</html>

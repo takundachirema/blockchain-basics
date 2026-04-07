@@ -21,6 +21,116 @@
                         Ethereum uses <strong>Proof of Stake (PoS)</strong> (since The Merge). Validators stake ETH and run nodes
                         to propose and attest blocks. Consensus ensures all nodes agree on the same chain and the same state.
                     </p>
+
+                    <h3>How Proof of Stake Works in Ethereum</h3>
+                    <p>
+                        Ethereum launched with <strong>Proof of Work (PoW)</strong>, where miners used hash power to produce blocks.
+                        In 2020, Ethereum introduced the <strong>Beacon Chain</strong> as the PoS consensus layer, running in
+                        parallel until The Merge moved Ethereum fully from PoW to PoS.
+                    </p>
+                    <p>
+                        To become a validator, funds must be committed on-chain through Ethereum’s staking/deposit mechanism.
+                        This stake acts as economic collateral: validators earn rewards for correct participation and risk penalties
+                        if they violate consensus rules.
+                    </p>
+                    <p>
+                        For each slot, the protocol pseudo-randomly chooses a <strong>block proposer</strong> and also assigns a
+                        <strong>committee</strong> of validators to attest (vote) on block validity. Over time, these attestations
+                        finalize checkpoints and make chain history increasingly hard to revert.
+                    </p>
+                    <ul>
+                        <li><strong>Honest behavior:</strong> Propose valid blocks, attest on time, and stay online to earn rewards.</li>
+                        <li><strong>Offline / poor performance:</strong> Missed attestations reduce rewards and can incur inactivity penalties.</li>
+                        <li><strong>Dishonest behavior:</strong> Actions like double-signing or conflicting attestations can trigger <strong>slashing</strong>, burning part of the validator’s stake.</li>
+                    </ul>
+                    <div class="warning-box">
+                        <strong>Key idea:</strong> In Ethereum PoS, security comes from putting real economic value at risk.
+                        Attacking consensus means risking your own staked ETH.
+                    </div>
+
+                    <h3>Block Structure</h3>
+                    <p>
+                        Based on Ethereum's block structure (as shown on Etherscan), a block contains the following components:
+                    </p>
+
+                    <div style="margin: 20px 0; text-align: center">
+                        <img
+                            src="/assets/block_details.png"
+                            alt="Ethereum block explorer view showing block overview: height, status, timestamp, transactions, gas, fees, hashes and roots"
+                            style="
+                                max-width: 100%;
+                                height: auto;
+                                border-radius: 5px;
+                                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                            "
+                        />
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                            <strong>Block details (block explorer):</strong> Overview of an Ethereum block showing header fields, gas and fees, and cryptographic hashes (hash, parent hash, state root, withdrawals root, nonce).
+                        </p>
+                    </div>
+
+                    <h4>Block Header</h4>
+                    <ul>
+                        <li><strong>Block Height/Number:</strong> The position of the block in the blockchain</li>
+                        <li><strong>Timestamp:</strong> When the block was created</li>
+                        <li><strong>Hash:</strong> Cryptographic hash of the block header</li>
+                        <li><strong>Parent Hash:</strong> Hash of the previous block (creates the chain)</li>
+                        <li><strong>State Root:</strong> Root hash of the state trie (all account balances and data)</li>
+                        <li><strong>Transactions Root:</strong> Root hash of the Merkle tree of all transactions</li>
+                        <li><strong>Receipts Root:</strong> Root hash of transaction receipts</li>
+                        <li><strong>Gas Limit:</strong> Maximum gas allowed in the block</li>
+                        <li><strong>Gas Used:</strong> Total gas consumed by transactions in the block</li>
+                        <li><strong>Base Fee Per Gas:</strong> Minimum gas price required (post-London upgrade)</li>
+                        <li><strong>Extra Data:</strong> Optional data that can be included by the block proposer</li>
+                        <li><strong>Nonce:</strong> Value used in proof of work (pre-Merge) or other consensus data</li>
+                    </ul>
+
+                    <h4>Block Body</h4>
+                    <ul>
+                        <li><strong>Transactions:</strong> List of all transactions included in the block</li>
+                        <li><strong>Transaction Count:</strong> Number of transactions in the block</li>
+                        <li><strong>Withdrawals:</strong> Validator withdrawal requests (post-Shanghai upgrade)</li>
+                    </ul>
+
+                    <h4>Consensus Information (Post-Merge Ethereum)</h4>
+                    <ul>
+                        <li><strong>Slot:</strong> The slot number in the beacon chain</li>
+                        <li><strong>Epoch:</strong> The epoch number (32 slots = 1 epoch)</li>
+                        <li><strong>Proposer Index:</strong> Identifier of the validator who proposed the block</li>
+                        <li><strong>Block Reward:</strong> Total reward received by the block proposer</li>
+                        <li><strong>Fee Recipient:</strong> Address that receives transaction fees</li>
+                    </ul>
+
+                    <h4>Additional Block Information</h4>
+                    <ul>
+                        <li><strong>Status:</strong> Whether the block is finalized or pending</li>
+                        <li><strong>Size:</strong> Size of the block in bytes</li>
+                        <li><strong>Burnt Fees:</strong> Amount of ETH burned (post-London upgrade)</li>
+                        <li><strong>Total Difficulty:</strong> Cumulative difficulty (pre-Merge)</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <strong>Note:</strong> The block structure has evolved over time. Ethereum's transition from Proof 
+                        of Work to Proof of Stake (The Merge) changed some block fields. Always refer to the current 
+                        network's specifications when working with blocks.
+                    </div>
+
+                    <h3>How Blocks Create the Chain</h3>
+                    <p>
+                        Each block contains a reference to its parent block through the "Parent Hash" field. This creates 
+                        an immutable chain:
+                    </p>
+                    <ol>
+                        <li>Block 1 contains transactions and references "genesis" (no parent)</li>
+                        <li>Block 2 contains transactions and references Block 1's hash</li>
+                        <li>Block 3 contains transactions and references Block 2's hash</li>
+                        <li>And so on...</li>
+                    </ol>
+                    <p>
+                        This chaining makes it extremely difficult to alter past blocks. Changing any block would require 
+                        recalculating all subsequent blocks, which becomes computationally infeasible as the chain grows.
+                    </p>
+
                     <h3>Types of Nodes in the Ethereum Ecosystem</h3>
                     <p>Different nodes play different roles. You don’t need to run one to use Ethereum, but understanding them helps.</p>
 
