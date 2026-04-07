@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Model - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="drawer" id="drawer">
+        <!-- Navigation will be rendered here by navigation.js -->
+      </aside>
+
+      <main class="main-content">
+        <div class="content-header">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1>Account Model</h1>
+        </div>
+
+        <div class="content-body">
+          <div class="page-content">
+            <h2>What Is the Account Model?</h2>
+            <p>
+              In the <strong>account model</strong>, ledger state is stored as
+              account records, where each account has a balance and a nonce.
+              Transactions directly decrease the sender's balance and increase
+              the receiver's balance.
+            </p>
+
+            <div class="info-box">
+              <strong>Definitions used in this page:</strong>
+              <ul style="margin-top: 10px">
+                <li>
+                  <strong>Account:</strong> A state entry identified by a public
+                  key/address.
+                </li>
+                <li>
+                  <strong>Balance:</strong> Spendable value currently owned by
+                  the account.
+                </li>
+                <li>
+                  <strong>Nonce:</strong> A per-account counter that must
+                  strictly increase with each transaction.
+                </li>
+                <li>
+                  <strong>Unsigned transaction:</strong> Transaction data before
+                  the signature field is filled.
+                </li>
+              </ul>
+            </div>
+
+            <h3>Transaction Shape</h3>
+            <p>
+              A typical account-model transaction includes:
+              <code>from</code>, <code>to</code>, <code>value</code>,
+              <code>fee</code>, <code>nonce</code>, and a signature
+              <code>sigma</code>. The signature is made over the unsigned
+              transaction fields.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/ethereum_transaction_fields.png"
+                alt="Ethereum transaction fields diagram with nonce, gasLimit, gasPrice, to, value, v, r, s, and data"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Transaction fields:</strong> Account-model transactions
+                include sender-controlled parameters, destination, value, and a
+                digital signature.
+              </p>
+            </div>
+
+            <h3>State and Nonces</h3>
+            <p>
+              The state stores both balances and nonces per account. The nonce
+              is critical because two transfers can look identical in every
+              other field. The nonce makes each transaction unique and ordered
+              per sender.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/ethereum_account_fields.png"
+                alt="Ethereum account fields diagram showing nonce, balance, storage root, and code hash"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Account state fields:</strong> Nonce tracks transaction
+                ordering, while balance and other fields define current account
+                state.
+              </p>
+            </div>
+
+            <h3>How Double Spending Is Addressed</h3>
+            <p>
+              In the account model, double spending is prevented primarily by
+              the
+              <strong>nonce rule</strong> plus standard validity checks:
+            </p>
+            <ul>
+              <li>
+                <strong>Exact nonce requirement:</strong> A transaction is valid
+                only if <code>tx.nonce = account.nonce + 1</code>.
+              </li>
+              <li>
+                <strong>Replay resistance:</strong> Once accepted, the sender's
+                nonce increments, so the same signed transaction cannot be
+                accepted again.
+              </li>
+              <li>
+                <strong>Signature check:</strong> Only the account owner can
+                authorize spending from that account.
+              </li>
+              <li>
+                <strong>Balance check:</strong> Sender balance must cover at
+                least <code>value + fee</code>.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <strong>Important:</strong> If two conflicting transactions are
+              broadcast from the same account, only the one with the currently
+              valid nonce can be applied first. After that, the nonce changes
+              and conflicting replays become invalid.
+            </div>
+
+            <h3>UTXO vs Account Model (Quick Comparison)</h3>
+            <p>
+              Compared with UTXO systems, account-model systems represent state
+              more like a balance sheet. This can feel simpler for users and is
+              the model used by Ethereum.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/account_utxo_table.png"
+                alt="Side-by-side comparison table of UTXO and accounts models"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Account vs UTXO:</strong> Structural differences between
+                UTXO and account-based ledgers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+  </body>
+</html>

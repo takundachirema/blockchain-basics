@@ -9,6 +9,7 @@ const navigationData = {
             expanded: true,
             pages: [
                 { id: 'intro', name: 'Introduction', path: '/blockchain-concepts/public-key-cryptography/intro.html' },
+                { id: 'digital-signing', name: 'Digital Signing', path: '/blockchain-concepts/public-key-cryptography/digital-signing.html' },
                 { id: 'key-generation', name: 'Key Generation & Operations', path: '/blockchain-concepts/public-key-cryptography/key-generation.html' }
             ]
         },
@@ -18,7 +19,9 @@ const navigationData = {
             icon: '📚',
             expanded: false,
             pages: [
-                { id: 'intro', name: 'Introduction', path: '/blockchain-concepts/distributed-ledgers/intro.html' }
+                { id: 'intro', name: 'Introduction', path: '/blockchain-concepts/distributed-ledgers/intro.html' },
+                { id: 'utxo', name: 'UTXO Model', path: '/blockchain-concepts/distributed-ledgers/utxo.html' },
+                { id: 'account-model', name: 'Account Model', path: '/blockchain-concepts/distributed-ledgers/account-model.html' }
             ]
         },
         {

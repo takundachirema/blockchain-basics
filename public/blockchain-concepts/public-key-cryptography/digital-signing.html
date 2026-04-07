@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Signing - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="drawer" id="drawer">
+        <!-- Navigation is rendered by navigation.js -->
+      </aside>
+
+      <main class="main-content">
+        <div class="content-header">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1>Digital Signatures and Digital Signing</h1>
+        </div>
+
+        <div class="content-body">
+          <div class="page-content">
+            <h2>Core Definitions</h2>
+
+            <div class="info-box">
+              <strong>Definitions used in this page:</strong>
+              <ul style="margin-top: 10px">
+                <li>
+                  <strong>Digital signature:</strong> A cryptographic proof
+                  attached to data that confirms who signed it and that the
+                  data was not changed after signing.
+                </li>
+                <li>
+                  <strong>Digital signing:</strong> The process of using a
+                  private key to generate a digital signature for a message or
+                  transaction.
+                </li>
+                <li>
+                  <strong>Hashing:</strong> The act of transforming data into a
+                  fixed-length digest that acts like a compact fingerprint.
+                </li>
+                <li>
+                  <strong>Hash function:</strong> A one-way algorithm that takes
+                  input data of any length and outputs a deterministic,
+                  fixed-size hash digest.
+                </li>
+              </ul>
+            </div>
+
+            <h3>How Digital Signing Works</h3>
+            <p>
+              A signer starts with a message or transaction, hashes it, and
+              then uses their <strong>private key</strong> to create a signature
+              from that digest. Anyone can verify the result using the
+              signer's <strong>public key</strong>.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/digital_signing.png"
+                alt="Diagram showing signature generation and signature verification using hash functions, private key, and public key"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Digital signing flow:</strong> Hash first, sign the
+                digest with the private key, then verify with the public key.
+              </p>
+            </div>
+
+            <h3>Signing vs Verification (ECDSA in a nutshell)</h3>
+            <p>
+              With ECDSA-style signatures, you don’t sign the full message
+              directly — you sign its <strong>hash</strong>. Signing uses the
+              private key plus a fresh random value (often called a nonce) to
+              produce a signature (typically two numbers, <code>r</code> and
+              <code>s</code>). Verification uses the <strong>public key</strong>,
+              the same message hash, and the signature to check if the signature
+              could only have been produced by the corresponding private key.
+              See
+              <a
+                href="https://learnmeabitcoin.com/technical/cryptography/elliptic-curve/ecdsa/#sign"
+                target="_blank"
+                rel="noopener noreferrer"
+                >ECDSA signing</a
+              >
+              for a visual walkthrough.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/cryptography_signing.gif"
+                alt="Animation illustrating ECDSA signing and verification flow"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Sign:</strong> private key + message hash → signature.
+                <strong>Verify:</strong> public key + message hash + signature →
+                valid/invalid.
+              </p>
+            </div>
+
+            <h3>How ECDSA Computes <code>r</code> and <code>s</code></h3>
+            <p>
+              In ECDSA, the signature is a pair <code>(r, s)</code>. You sign
+              the message hash (not the full message) using private key
+              <code>d</code>, random nonce <code>k</code>, generator point
+              <code>G</code>, and curve order <code>n</code>.
+            </p>
+            <ol>
+              <li>
+                <strong>Compute <code>r</code>:</strong> first compute
+                <code>R = k x G</code>, then set
+                <code>r = R<sub>x</sub> mod n</code>.
+              </li>
+              <li>
+                <strong>Compute <code>s</code>:</strong> using message hash
+                <code>z</code>, calculate
+                <code>s = k<sup>-1</sup>(z + r*d) mod n</code>.
+              </li>
+              <li>
+                <strong>Signature output:</strong> the final signature is the
+                pair <code>(r, s)</code>.
+              </li>
+            </ol>
+            <p>
+              Security note: <code>k</code> must be fresh and unpredictable for
+              each signature. Reusing or leaking <code>k</code> can expose the
+              private key.
+            </p>
+
+            <h3>How <code>r</code> and <code>s</code> Are Used in Verification</h3>
+            <p>
+              During verification, the network takes the signature pair
+              <code>(r, s)</code>, the message hash, and the signer’s
+              <strong>public key</strong>. It then uses the public key together
+              with <code>s</code> to reconstruct a check value from the signed
+              data.
+            </p>
+            <p>
+              Finally, it compares that reconstructed value against the
+              signature’s <code>r</code>. If they match, the signature is valid;
+              if they do not match, verification fails.
+            </p>
+
+            <h3>What Hashing Is</h3>
+            <p>
+              <strong>Hashing</strong> converts input data (for example plain
+              text or a transaction payload) into a fixed-length digest. In
+              digital signing, we sign this digest instead of signing the full
+              raw message directly.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/hashing.png"
+                alt="Hashing diagram showing plain text transformed by a hash function into hashed output"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Hashing flow:</strong> Input data goes through a hash
+                function and produces a fixed-length digest.
+              </p>
+            </div>
+
+            <h3>Properties of a Good Hash Function</h3>
+            <ul>
+              <li>
+                <strong>Deterministic:</strong> The same input always gives the
+                same output.
+              </li>
+              <li>
+                <strong>Fast to compute:</strong> Efficient enough for frequent
+                signing and verification.
+              </li>
+              <li>
+                <strong>Preimage resistant:</strong> It is infeasible to recover
+                the original input from only the hash.
+              </li>
+              <li>
+                <strong>Second-preimage resistant:</strong> It is infeasible to
+                find a different input with the same hash as a given input.
+              </li>
+              <li>
+                <strong>Collision resistant:</strong> It is infeasible to find
+                any two different inputs that produce the same hash.
+              </li>
+              <li>
+                <strong>Avalanche effect:</strong> Small input changes produce
+                very different hash outputs.
+              </li>
+            </ul>
+
+            <h3>Why Hashing Is Necessary for Digital Signing</h3>
+            <p>
+              Hashing is a required step in practical signature systems for
+              both security and efficiency:
+            </p>
+            <ul>
+              <li>
+                <strong>Efficiency:</strong> Signing a short fixed-size digest
+                is much faster than signing large raw data directly.
+              </li>
+              <li>
+                <strong>Deterministic verification:</strong> Verifiers hash the
+                received message the same way and compare against what the
+                signature proves.
+              </li>
+              <li>
+                <strong>Tamper detection:</strong> Even a tiny message change
+                produces a very different digest, so altered data fails
+                signature verification.
+              </li>
+              <li>
+                <strong>Standardized input:</strong> Hash functions convert
+                variable-length messages into a fixed-size value expected by
+                digital signature algorithms.
+              </li>
+            </ul>
+
+            <div class="warning-box">
+              <strong>Important:</strong> Digital signatures provide
+              authenticity and integrity, but they do not encrypt the message
+              contents by themselves.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+  </body>
+</html>

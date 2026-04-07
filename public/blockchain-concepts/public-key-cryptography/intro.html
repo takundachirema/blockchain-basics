@@ -22,103 +22,258 @@
 
         <div class="content-body">
           <div class="page-content">
-            <h2>What is Public Key Cryptography?</h2>
+            <h2>Cryptography Basics</h2>
+
+            <div class="info-box">
+              <strong>Definitions used in this page:</strong>
+              <ul style="margin-top: 10px">
+                <li>
+                  <strong>Cryptography:</strong> The practice of protecting
+                  information by transforming it so only authorized parties can
+                  read it.
+                </li>
+                <li>
+                  <strong>Cipher:</strong> The algorithm/rule used to transform
+                  plaintext into ciphertext and back again.
+                </li>
+                <li>
+                  <strong>Plaintext:</strong> The original readable message.
+                </li>
+                <li>
+                  <strong>Ciphertext:</strong> The scrambled output produced by
+                  encryption.
+                </li>
+                <li>
+                  <strong>Symmetric cryptography:</strong> Encryption and
+                  decryption use the same shared key.
+                </li>
+                <li>
+                  <strong>Asymmetric cryptography:</strong> Encryption and
+                  signatures use a public/private key pair.
+                </li>
+                <li>
+                  <strong>Digital signature:</strong> A cryptographic proof
+                  attached to data that shows who signed it and that the data
+                  has not been altered.
+                </li>
+                <li>
+                  <strong>Digital signing:</strong> The process of using a
+                  private key to create a digital signature for a message or
+                  transaction.
+                </li>
+              </ul>
+            </div>
 
             <p>
-              Public Key Cryptography, also known as asymmetric cryptography, is
-              a cryptographic system that uses pairs of keys: a public key and a
-              private key. These keys are mathematically related but cannot be
-              derived from each other easily.
+              <strong>Cryptography</strong> helps us keep data confidential and
+              verifiable. The basic idea is simple: we start with
+              <strong>plaintext</strong>, apply a <strong>cipher</strong>, and
+              produce <strong>ciphertext</strong>. To recover the original
+              message, we decrypt the ciphertext with the appropriate key.
+            </p>
+
+            <h3>Symmetric Cryptography</h3>
+            <p>
+              In <strong>symmetric cryptography</strong>, both sides use the
+              same secret key. The sender encrypts with that key, and the
+              receiver decrypts with that same key.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/encryption_symmetric.png"
+                alt="Symmetric encryption diagram showing sender and receiver using the same key with a dotted middle divider"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Symmetric model:</strong> The same key is used on both
+                the sender and receiver sides.
+              </p>
+            </div>
+
+            <h3>Caesar Cipher Example</h3>
+            <p>
+              A classic example of a symmetric cipher is the
+              <strong>Caesar cipher</strong>, where each letter is shifted by a
+              fixed amount. If we use a shift of <strong>+3</strong>:
+            </p>
+            <ul>
+              <li><strong>Plaintext:</strong> <code>HELLO</code></li>
+              <li><strong>Cipher rule:</strong> Shift each letter +3</li>
+              <li>
+                <strong>Ciphertext:</strong> <code>KHOOR</code>
+                (H->K, E->H, L->O, L->O, O->R)
+              </li>
+            </ul>
+            <p>
+              To decrypt, apply the inverse shift (<strong>-3</strong>) to
+              recover the original plaintext.
             </p>
 
             <div class="info-box">
-              <strong>Key Concept:</strong> The public key can be shared openly,
-              while the private key must be kept secret. This fundamental
-              property enables secure communication and digital signatures
-              without requiring a shared secret beforehand.
+              <strong>Note:</strong> Caesar is useful for learning, but it is
+              not secure for real systems. Modern cryptography uses much
+              stronger ciphers.
             </div>
 
-            <h3>How It Works</h3>
-            <p>In public key cryptography:</p>
+            <h3>Asymmetric (Public Key) Cryptography</h3>
+            <p>
+              <strong>Public key cryptography</strong> uses two mathematically
+              related keys:
+            </p>
             <ul>
               <li>
-                <strong>Public Key:</strong> Can be freely distributed and used
-                to encrypt messages or verify signatures. Anyone can have access
-                to this key.
+                <strong>Public key:</strong> Shareable; used to encrypt data or
+                verify signatures.
               </li>
               <li>
-                <strong>Private Key:</strong> Must be kept secret. It's used to
-                decrypt messages encrypted with the corresponding public key, or
-                to create digital signatures.
+                <strong>Private key:</strong> Secret; used to decrypt (where
+                applicable) or create signatures.
               </li>
             </ul>
 
-            <h3>Key Properties</h3>
-            <ol>
-              <li>
-                <strong>One-way Function:</strong> It's computationally
-                infeasible to derive the private key from the public key.
-              </li>
-              <li>
-                <strong>Mathematical Relationship:</strong> The keys are
-                mathematically linked, allowing operations performed with one
-                key to be verified or reversed with the other.
-              </li>
-              <li>
-                <strong>Security:</strong> The security relies on mathematical
-                problems that are difficult to solve, such as the discrete
-                logarithm problem in elliptic curve cryptography.
-              </li>
-            </ol>
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/encryption_asymmetric.png"
+                alt="Asymmetric encryption diagram showing sender and receiver sides with public and private keys and a dotted middle divider"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Asymmetric model:</strong> Different keys are used on
+                each side (public key vs private key).
+              </p>
+            </div>
 
-            <h3>Common Use Cases</h3>
-            <ul>
-              <li>
-                <strong>Encryption:</strong> Encrypt data with a public key so
-                only the holder of the private key can decrypt it.
-              </li>
-              <li>
-                <strong>Digital Signatures:</strong> Sign data with a private
-                key so anyone with the public key can verify the signature's
-                authenticity.
-              </li>
-              <li>
-                <strong>Authentication:</strong> Prove identity without
-                revealing the private key.
-              </li>
-            </ul>
+            <h3>Why This Matters for Blockchain</h3>
+            <p>
+              Blockchains rely heavily on asymmetric cryptography for ownership
+              and authorization. Users keep private keys secret and use them to
+              sign transactions. Networks verify signatures with the corresponding
+              public keys.
+            </p>
 
             <h3>Elliptic Curve Cryptography (ECC)</h3>
             <p>
-              Ethereum uses <strong>secp256k1</strong>, a specific elliptic
-              curve defined by the Standards for Efficient Cryptography Group
-              (SECG). This curve is also used by Bitcoin.
+              Ethereum uses <strong>secp256k1</strong>, an elliptic curve also
+              used by Bitcoin. ECC provides strong security with relatively small
+              keys and efficient computation.
             </p>
-            <p>Advantages of ECC:</p>
+
+            <h4>How the public key is generated from the private key</h4>
+            <p>
+              In ECDSA-style systems on a curve like secp256k1, key generation
+              works as follows (see
+              <a
+                href="https://learnmeabitcoin.com/technical/cryptography/elliptic-curve/ecdsa/#key-generation"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Key Generation — ECDSA on Learn Me A Bitcoin</a
+              >):
+            </p>
             <ul>
-              <li>Smaller key sizes for equivalent security compared to RSA</li>
-              <li>Faster computation</li>
-              <li>Lower memory and bandwidth requirements</li>
+              <li>
+                <strong>Private key (<code>d</code>):</strong> A large,
+                cryptographically random integer chosen from a safe range on the
+                curve (below the curve order <code>n</code>). It must stay secret.
+              </li>
+              <li>
+                <strong>Generator point (<code>G</code>):</strong> A fixed,
+                standard “starting” point on the curve that everyone agrees on
+                for that curve.
+              </li>
+              <li>
+                <strong>Public key (<code>Q</code>):</strong> The curve point
+                obtained by <strong>scalar multiplication</strong>:
+                <code>Q = d × G</code> — you effectively “walk” along the curve
+                from <code>G</code> according to the private key <code>d</code>.
+                The public key is that resulting point (often stored as
+                <code>x</code> and <code>y</code> coordinates, or in compressed
+                form).
+              </li>
             </ul>
+            <p>
+              Elliptic curve multiplication is a <strong>trapdoor</strong> or
+              one-way operation in practice: given <code>d</code>, computing
+              <code>Q</code> is fast, but given <code>Q</code> alone, recovering
+              <code>d</code> by trying values is infeasible for a well-chosen
+              private key. That asymmetry is what makes sharing the public key
+              safe while keeping the private key private.
+            </p>
+            <p>
+              The math works because secp256k1 points form an algebraic group:
+              point addition is well-defined, has an identity point, every point
+              has an inverse, and repeated addition (scalar multiplication) stays
+              inside the same set of valid curve points. So when we compute
+              <code>Q = d × G</code>, the result is guaranteed to also be a point
+              on the same curve.
+            </p>
+            <p>
+              A public key is fundamentally a <strong>point</strong>
+              <code>(x, y)</code>. It can be encoded in different ways:
+            </p>
+            <ul>
+              <li>
+                <strong>Uncompressed:</strong> both <code>x</code> and
+                <code>y</code> are included.
+              </li>
+              <li>
+                <strong>Compressed:</strong> full <code>x</code> plus one bit of
+                information (encoded as a prefix) to indicate which valid
+                <code>y</code> is intended.
+              </li>
+              <li>
+                <strong>x-only (some schemes):</strong> only
+                <code>x</code> is stored under specific protocol rules.
+              </li>
+            </ul>
+            <p>
+              In Ethereum-style account derivation, the address is derived from
+              the uncompressed public key coordinates (<code>x || y</code>) after
+              hashing.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/cryptography_public_key.gif"
+                alt="Animation showing elliptic curve scalar multiplication: private key times generator point yields public key point"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Public key from private key:</strong> The private key
+                scales the generator point on the curve to produce the public
+                key point.
+              </p>
+            </div>
 
             <p>
-              For a deeper understanding of how signatures are created and
-              verified on elliptic curves, see the
-              <strong>Elliptic Curve Digital Signature Algorithm (ECDSA)</strong
-              >. A clear introduction and technical overview is available on
-              Wikipedia:
+              Signing and verifying messages uses this same curve math; for the
+              full ECDSA sign/verify walkthrough, see
               <a
                 href="https://learnmeabitcoin.com/technical/cryptography/elliptic-curve/ecdsa"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Elliptic Curve Digital Signature Algorithm</a
+                >Elliptic Curve Digital Signature Algorithm (ECDSA)</a
               >.
             </p>
 
             <div class="warning-box">
-              <strong>Important:</strong> Never share your private key! If
-              someone gains access to your private key, they can impersonate you
-              and access all your assets.
+              <strong>Important:</strong> Never share your private key. Anyone
+              with your private key can sign transactions as you.
             </div>
           </div>
         </div>

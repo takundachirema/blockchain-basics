@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UTXO Model - Blockchain Tutorial</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <aside class="drawer" id="drawer">
+        <!-- Navigation will be rendered here by navigation.js -->
+      </aside>
+
+      <main class="main-content">
+        <div class="content-header">
+          <button class="menu-toggle" id="menuToggle">☰</button>
+          <h1>UTXO Model</h1>
+        </div>
+
+        <div class="content-body">
+          <div class="page-content">
+            <h2>What Is the UTXO Model?</h2>
+            <p>
+              The <strong>UTXO model</strong> (Unspent Transaction Output model)
+              represents money as a set of spendable outputs. A transaction
+              consumes existing outputs as inputs and creates new outputs for
+              future spending. Instead of maintaining one mutable balance entry
+              per account, the ledger tracks a changing set of outputs that are
+              currently unspent.
+            </p>
+
+            <div class="info-box">
+              <strong>Definitions used in this page:</strong>
+              <ul style="margin-top: 10px">
+                <li>
+                  <strong>UTXO:</strong> An output from an earlier transaction
+                  that has not yet been spent.
+                </li>
+                <li>
+                  <strong>Input:</strong> A reference to a previous UTXO that is
+                  being consumed now.
+                </li>
+                <li>
+                  <strong>Output:</strong> A newly created coin assignment (value
+                  + locking condition/public key).
+                </li>
+                <li>
+                  <strong>Outpoint:</strong> The pair
+                  <code>(txid, output_index)</code> used to uniquely identify a
+                  previous output.
+                </li>
+                <li>
+                  <strong>Change output:</strong> An output that sends leftover
+                  value back to the sender.
+                </li>
+              </ul>
+            </div>
+
+            <h3>Core Intuition</h3>
+            <ul>
+              <li>
+                You do not spend "part of an account balance"; you spend one or
+                more whole UTXOs.
+              </li>
+              <li>
+                If selected inputs are larger than the payment, you create a
+                recipient output plus a change output back to yourself.
+              </li>
+              <li>
+                UTXOs form a transaction graph: outputs are created, later
+                referenced, and then removed from the spendable set.
+              </li>
+              <li>
+                Ownership is tied to public keys and unlocking conditions, not
+                legal names.
+              </li>
+            </ul>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/utxo_fig_32.png"
+                alt="Simple transaction flow from Charlie to Alice to Bob"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>UTXO idea:</strong> A payment output can later become an
+                input to another transaction.
+              </p>
+            </div>
+
+            <h3>How Spending Works in Practice</h3>
+            <ol>
+              <li>
+                <strong>Select inputs:</strong> Choose one or more UTXOs you can
+                unlock with your key(s).
+              </li>
+              <li>
+                <strong>Create outputs:</strong> Add recipient output(s) and, if
+                needed, a change output.
+              </li>
+              <li>
+                <strong>Sign:</strong> Sign the unsigned transaction data for
+                each input according to its locking condition.
+              </li>
+              <li>
+                <strong>Broadcast:</strong> Send to the network for validation.
+              </li>
+            </ol>
+
+            <p>
+              The model enforces conservation: total output value cannot exceed
+              total input value (fees aside). Once an input is used, that
+              referenced UTXO is removed from the UTXO set and cannot be spent
+              again.
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/utxo_fig_34.png"
+                alt="One input split into two outputs including payment and change"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Multiple outputs:</strong> One consumed UTXO can create
+                several outputs, such as a recipient payment and a change output.
+              </p>
+            </div>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/utxo_fig_38.png"
+                alt="Outpoint example showing transaction 19 spending output 1 from transaction 12"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                <strong>Outpoint reference:</strong> Inputs identify exactly
+                which prior output they spend using <code>(txid, idx)</code>.
+              </p>
+            </div>
+
+            <h3>Real transaction: Blockstream Explorer</h3>
+            <p>
+              The screenshot below is from
+              <a
+                href="https://blockstream.info/tx/d753cbbaeb2f6d50ec11a303afc51e11b52ecaeadd6f46a99409f652114208be?expand"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Blockstream’s Bitcoin explorer</a
+              >
+              for one transaction. It shows how a UTXO-based transaction looks
+              in practice: <strong>inputs</strong> on the left consume prior
+              outputs; <strong>outputs</strong> on the right create new coins
+              (some may later become UTXOs until spent).
+            </p>
+
+            <div style="margin: 20px 0; text-align: center">
+              <img
+                src="/assets/utxo_bitcoin.png"
+                alt="Blockstream explorer view of a Bitcoin transaction with inputs on the left and outputs on the right"
+                style="
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                "
+              />
+              <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                Source:
+                <a
+                  href="https://blockstream.info/tx/d753cbbaeb2f6d50ec11a303afc51e11b52ecaeadd6f46a99409f652114208be?expand"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >blockstream.info</a
+                >
+                (expanded transaction view).
+              </p>
+            </div>
+            <p>
+              This explorer view gives a practical UTXO picture: the left side
+              shows an earlier output being consumed as an input, and the right
+              side shows new outputs created by this transaction. Any output
+              marked <strong>Unspent</strong> is currently part of the global
+              UTXO set and can be used as an input in a future transaction.
+            </p>
+            <p>
+              It also highlights transaction finality and accounting at a glance:
+              confirmations indicate how deep the transaction is in the chain,
+              and output amounts show how value was split across newly created
+              outputs.
+            </p>
+
+            <h3>Validation and Double-Spend Protection</h3>
+            <p>
+              A node validates a new transaction by checking that its referenced
+              inputs are currently in the UTXO set, signatures are valid for the
+              corresponding locking conditions, and values are consistent. If a
+              transaction attempts to spend an already-spent output, it is
+              rejected as a <strong>double spend</strong>.
+            </p>
+
+            <div class="info-box">
+              <strong>Takeaway:</strong> In the UTXO model, global state for
+              spendable money is exactly the current UTXO set. Transactions are
+              state transitions that remove old UTXOs and create new ones.
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="/js/navigation-data-blockchain-concepts.js"></script>
+    <script src="/js/navigation.js"></script>
+  </body>
+</html>
