@@ -24,6 +24,12 @@ app.get("/", (req, res) => {
   res.redirect("/index.html");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// In Vercel, the app is invoked as a serverless function.
+// Locally (or other Node hosts), start an HTTP listener.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
