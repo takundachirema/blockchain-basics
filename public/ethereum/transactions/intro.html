@@ -72,6 +72,63 @@
                     <p>
                         Your total fee per unit of gas is typically <strong>max fee per gas</strong> (the most you are willing to pay), and the protocol charges you the <strong>base fee + priority fee</strong>, up to that maximum. Any unused portion of the max fee is refunded.
                     </p>
+                    <p>
+                        You can think of <strong>gas used</strong> as a meter for
+                        blockchain resources consumed by execution — similar to
+                        paying for CPU time, disk/state updates, and bandwidth.
+                        More resource-heavy transactions consume more gas.
+                    </p>
+                    <p>Common operations that consume gas include:</p>
+                    <ul>
+                        <li><strong>Computation:</strong> Arithmetic, branching, and EVM opcode execution.</li>
+                        <li><strong>Storage reads/writes:</strong> Reading state costs gas, but <strong>writing/updating storage is much more expensive</strong>.</li>
+                        <li><strong>Contract calls:</strong> Calling other contracts adds execution overhead.</li>
+                        <li><strong>Calldata size:</strong> Larger input data generally increases gas used.</li>
+                        <li><strong>Contract deployment:</strong> Usually expensive because bytecode is stored on-chain.</li>
+                    </ul>
+                    <div class="info-box">
+                        <strong>What usually costs more gas?</strong> Storage writes, complex contract logic, multiple internal calls, and large data payloads.
+                    </div>
+                    <p>
+                        Gas is also a safety mechanism. Since every opcode costs
+                        gas and each transaction has a <strong>gas limit</strong>,
+                        execution must stop when the limit is reached. This helps
+                        prevent denial-of-service behavior like infinite loops
+                        from running forever and consuming all node resources.
+                    </p>
+
+                    <h3>Gas Price vs Gas Used (Etherscan Example)</h3>
+                    <p>
+                        <strong>Gas price</strong> and <strong>gas used</strong> are different:
+                        gas price is the rate you pay per gas unit, while gas used is
+                        the amount of gas units actually consumed by execution.
+                    </p>
+                    <div style="margin: 15px 0; text-align: center">
+                        <img
+                            src="/assets/etherscan_txn.png"
+                            alt="Etherscan transaction view showing gas price, gas used, and transaction fee"
+                            style="max-width: 100%; height: auto; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"
+                        />
+                        <p style="margin-top: 10px; font-size: 0.9em; color: #666">
+                            <strong>Etherscan view:</strong> Gas Price, Gas Limit &amp; Usage by Txn, and Transaction Fee are shown as separate fields.
+                        </p>
+                    </div>
+                    <ul>
+                        <li>
+                            <strong>Gas Price:</strong> On Ethereum (EIP-1559 style), the effective price is:
+                            <code>base fee + priority fee</code> (tip).
+                        </li>
+                        <li>
+                            <strong>Gas Used:</strong> Actual units consumed by transaction execution (always less than or equal to gas limit).
+                        </li>
+                        <li>
+                            <strong>Transaction Fee:</strong>
+                            <code>gas price × gas used</code>.
+                        </li>
+                    </ul>
+                    <div class="info-box">
+                        <strong>Quick example:</strong> If gas price is 30 Gwei and gas used is 21,000, then fee = 30 × 21,000 = 630,000 Gwei = 0.00063 ETH.
+                    </div>
 
                     <h3>Block Rewards vs Priority Fees</h3>
                     <p>

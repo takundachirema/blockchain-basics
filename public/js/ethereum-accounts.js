@@ -1,4 +1,7 @@
 // Get or Import Address page: import account from private key
+const KEY_GENERATION_STORAGE_KEY = 'blockchain_tutorial_keypair';
+const IMPORTED_ACCOUNT_STORAGE_KEY = 'ethereum_imported_account';
+
 document.addEventListener('DOMContentLoaded', () => {
     const importBtn = document.getElementById('importBtn');
     const clearImportBtn = document.getElementById('clearImportBtn');
@@ -17,6 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (importOutputSection) importOutputSection.style.display = 'none';
             if (importPrivateKeyShow) importPrivateKeyShow.checked = false;
             if (importPrivateKeyInput) importPrivateKeyInput.type = 'password';
+            try {
+                localStorage.removeItem(IMPORTED_ACCOUNT_STORAGE_KEY);
+            } catch (error) {
+                console.warn('Could not clear imported account from storage:', error);
+            }
         });
     }
     if (importPrivateKeyShow && importPrivateKeyInput) {
@@ -29,6 +37,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (copyImportAddressBtn && importAddressOutput) {
         copyImportAddressBtn.addEventListener('click', () => copyToClipboardFromEl(importAddressOutput, copyImportAddressBtn, 'Copy Address'));
+    }
+
+    // Prefill from key-generation page if available in localStorage.
+    if (importPrivateKeyInput) {
+        try {
+            const stored = localStorage.getItem(KEY_GENERATION_STORAGE_KEY);
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (parsed && typeof parsed.privateKey === 'string' && parsed.privateKey.trim()) {
+                    const clean = parsed.privateKey.replace(/^0x/i, '').trim();
+                    importPrivateKeyInput.value = '0x' + clean;
+                }
+            }
+        } catch (error) {
+            console.warn('Could not prefill private key from storage:', error);
+        }
+    }
+
+    // Load previously imported account if available.
+    try {
+        const storedImportedAccount = localStorage.getItem(IMPORTED_ACCOUNT_STORAGE_KEY);
+        if (storedImportedAccount && importOutputSection && importPublicKeyOutput && importAddressOutput) {
+            const parsed = JSON.parse(storedImportedAccount);
+            if (parsed && parsed.publicKey && parsed.ethereumAddress) {
+                importPublicKeyOutput.textContent = parsed.publicKey;
+                importAddressOutput.textContent = parsed.ethereumAddress;
+                importOutputSection.style.display = 'block';
+            }
+        }
+    } catch (error) {
+        console.warn('Could not load imported account from storage:', error);
     }
 });
 
@@ -84,6 +123,17 @@ async function importFromPrivateKey() {
             importPublicKeyOutput.textContent = '0x' + data.publicKey;
             importAddressOutput.textContent = data.ethereumAddress;
             importOutputSection.style.display = 'block';
+            try {
+                localStorage.setItem(
+                    IMPORTED_ACCOUNT_STORAGE_KEY,
+                    JSON.stringify({
+                        publicKey: '0x' + data.publicKey,
+                        ethereumAddress: data.ethereumAddress
+                    })
+                );
+            } catch (error) {
+                console.warn('Could not save imported account to storage:', error);
+            }
         } else {
             alert(data.error || 'Failed to import key');
         }

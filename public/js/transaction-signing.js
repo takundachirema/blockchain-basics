@@ -1,5 +1,6 @@
 // Transaction signing functionality
 const STORAGE_KEY = 'transactionSigningData';
+const KEY_GENERATION_STORAGE_KEY = 'blockchain_tutorial_keypair';
 let codeEditor = null;
 let compiledBytecode = null;
 let encodedFunctionData = null;
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load stored data on page load
     loadStoredTransactionData();
+    prefillPrivateKeyFromKeyGenerationStorage();
 
     // Set up input listeners to save data on change
     setupInputListeners();
@@ -79,6 +81,27 @@ function toggleContractSection() {
             document.getElementById('compileStatus').textContent = '';
             // saveTransactionData();
         }
+    }
+}
+
+function prefillPrivateKeyFromKeyGenerationStorage() {
+    const privateKeyInput = document.getElementById('privateKey');
+    if (!privateKeyInput) return;
+
+    // Do not override a value the user already has from this page storage.
+    if (privateKeyInput.value && privateKeyInput.value.trim()) return;
+
+    try {
+        const stored = localStorage.getItem(KEY_GENERATION_STORAGE_KEY);
+        if (!stored) return;
+
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed.privateKey === 'string' && parsed.privateKey.trim()) {
+            const clean = parsed.privateKey.replace(/^0x/i, '').trim();
+            privateKeyInput.value = '0x' + clean;
+        }
+    } catch (error) {
+        console.warn('Could not prefill transaction private key from storage:', error);
     }
 }
 
