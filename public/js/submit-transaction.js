@@ -1,5 +1,7 @@
 // Submit transaction functionality
 const STORAGE_KEY = 'submitTransactionData';
+const DEFAULT_RPC_URL = 'https://1rpc.io/sepolia';
+const LEGACY_PUBLIC_SEPOLIA_RPC = 'https://rpc.sepolia.org';
 
 document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submitBtn');
@@ -7,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load stored data on page load
     loadStoredTransactionData();
+    const rpcInput = document.getElementById('rpcUrl');
+    if (rpcInput && !rpcInput.value.trim()) {
+        rpcInput.value = DEFAULT_RPC_URL;
+    }
 
     // Set up input listeners to save data on change
     setupInputListeners();
@@ -49,17 +55,25 @@ function saveTransactionData() {
 }
 
 function loadStoredTransactionData() {
+    const rpcInput = document.getElementById('rpcUrl');
+    const signedTxInput = document.getElementById('signedTx');
+    if (!rpcInput || !signedTxInput) return;
+
     try {
         const storedData = localStorage.getItem(STORAGE_KEY);
-        if (storedData) {
-            const transactionData = JSON.parse(storedData);
-            
-            if (transactionData.rpcUrl) {
-                document.getElementById('rpcUrl').value = transactionData.rpcUrl;
-            }
-            if (transactionData.signedTx) {
-                document.getElementById('signedTx').value = transactionData.signedTx;
-            }
+        if (!storedData) {
+            return;
+        }
+        const transactionData = JSON.parse(storedData);
+
+        let rpc = (transactionData.rpcUrl || '').trim();
+        if (rpc === LEGACY_PUBLIC_SEPOLIA_RPC) {
+            rpc = DEFAULT_RPC_URL;
+        }
+        rpcInput.value = rpc || DEFAULT_RPC_URL;
+
+        if (transactionData.signedTx) {
+            signedTxInput.value = transactionData.signedTx;
         }
     } catch (error) {
         console.error('Error loading transaction data from localStorage:', error);
@@ -67,7 +81,7 @@ function loadStoredTransactionData() {
 }
 
 function clearForm() {
-    document.getElementById('rpcUrl').value = 'https://sepolia.infura.io/v3/YOUR_API_KEY';
+    document.getElementById('rpcUrl').value = DEFAULT_RPC_URL;
     document.getElementById('signedTx').value = '';
     document.getElementById('transactionResult').style.display = 'none';
     document.getElementById('errorResult').style.display = 'none';
