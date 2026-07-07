@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -107,35 +107,6 @@
               funds can be created or destroyed without following the protocol's
               rules.
             </p>
-
-            <h3>UTXO vs Account Model</h3>
-            <p>
-              Distributed ledgers track ownership and balances in one of two main ways: the <strong>UTXO model</strong> or the <strong>account (balance) model</strong>. The choice affects how the ledger state is stored and how transactions are built.
-            </p>
-
-            <h4>UTXO (Unspent Transaction Output) Model</h4>
-            <p>
-              In the <strong>UTXO model</strong>, the ledger does not store a single "balance" per address. Instead, it stores a set of <strong>unspent transaction outputs</strong>: each UTXO is a chunk of value (e.g. coins) that was the output of a past transaction and has not yet been used as an input to another transaction.
-            </p>
-            <ul>
-              <li><strong>No account balance:</strong> There is no single "account balance" field. Your "balance" is the sum of all UTXOs that are locked to your address (or that you can unlock with your key).</li>
-              <li><strong>Spending:</strong> To send value, you select one or more of your UTXOs as <strong>inputs</strong> to a new transaction. The transaction consumes those UTXOs and creates new <strong>outputs</strong>: some go to recipients, and often one "change" output goes back to you. Each UTXO can only be spent once (fully consumed).</li>
-              <li><strong>Privacy &amp; parallelism:</strong> Different UTXOs can be spent in different transactions without a single global nonce, which can help with privacy and with parallel processing. Bitcoin uses this model.</li>
-            </ul>
-
-            <h4>Account (Balance) Model</h4>
-            <p>
-              In the <strong>account model</strong>, the ledger keeps a <strong>balance</strong> (and often a nonce) for each account address. There are no UTXOs; the state is "account → balance (and other fields)."
-            </p>
-            <ul>
-              <li><strong>Direct balance:</strong> Each account has a current balance. To send value, you create a transaction that debits your account and credits the recipient's. The ledger updates the two account balances.</li>
-              <li><strong>Nonce:</strong> Typically each account has a nonce (e.g. transaction count) that increments with each transaction. This prevents replay and orders transactions from the same account.</li>
-              <li><strong>Simpler mental model:</strong> Users and developers think in terms of "my balance" and "send X to address Y," which aligns with traditional banking. Ethereum, XRP Ledger, and many other chains use the account model.</li>
-            </ul>
-
-            <div class="info-box">
-              <strong>Summary:</strong> <strong>UTXO</strong> = balance is the sum of unspent outputs; you spend outputs and create new ones; no per-account balance field. <strong>Account model</strong> = each account has a balance (and usually a nonce); transactions directly add/subtract from balances. Both models ensure that value cannot be created or double-spent; they differ in how state is represented and how transfers are expressed.
-            </div>
 
             <h3>3. Transactions</h3>
             <p>
